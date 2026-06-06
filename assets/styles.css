@@ -249,6 +249,53 @@ main { padding-bottom: 24px; }
 .benefit b { display: block; color: var(--on-surface); font-size: 1rem; margin-bottom: 4px; }
 .benefit span { color: var(--on-surface-variant); font-size: .9rem; }
 
+/* ---- "How it works" flow ---- */
+.flow {
+  margin: 28px 0 0;
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  gap: 10px;
+}
+.flow__step {
+  flex: 1 1 0;
+  position: relative;
+  background: var(--surface-container);
+  border-radius: var(--radius);
+  padding: 26px 16px 20px;
+  text-align: center;
+}
+.flow__num {
+  position: absolute;
+  top: -13px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--primary);
+  color: var(--on-primary);
+  font-weight: 700;
+  font-size: .9rem;
+  display: grid;
+  place-items: center;
+  box-shadow: var(--elev-1);
+}
+.flow__icon {
+  font-size: 34px;
+  color: var(--primary);
+  display: block;
+  margin: 2px auto 10px;
+}
+.flow__step b { display: block; color: var(--on-surface); font-size: 1.02rem; margin-bottom: 4px; }
+.flow__desc { color: var(--on-surface-variant); font-size: .9rem; }
+.flow__arrow {
+  align-self: center;
+  flex: 0 0 auto;
+  font-size: 28px;
+  color: var(--outline);
+}
+
 /* ---- "How to use" steps ---- */
 .steps {
   list-style: none;
@@ -330,4 +377,6 @@ main { padding-bottom: 24px; }
 @media (max-width: 560px) {
   .hero { padding-top: 44px; }
   .benefits { grid-template-columns: 1fr; }
+  .flow { flex-direction: column; gap: 8px; }
+  .flow__arrow { transform: rotate(90deg); }
 }
