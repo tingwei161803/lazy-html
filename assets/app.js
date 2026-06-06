@@ -1,207 +1,91 @@
 /* =========================================================================
-   bento/app.js  (vanilla, no build)
-   Reads:
-     window.SITE_META  -> { title:{en,zh}, subtitle:{en,zh} }
-     window.SITE_TILES -> [{ slug, size:"sm"|"md"|"lg"|"wide"|"tall",
-                             title:{en,zh}, value?:"42%", body:{en,zh},
-                             icon?:"<material symbol>", accent?:true }]
+   lazy-html intro page — vanilla, no build.
+   Only: bilingual (zh/en) full-page switch, light/dark, GA4 download event.
    ========================================================================= */
 (function () {
   "use strict";
 
-  /* ---------- data ---------- */
-  var META  = (window.SITE_META && typeof window.SITE_META === "object") ? window.SITE_META : {};
-  var TILES = Array.isArray(window.SITE_TILES) ? window.SITE_TILES : [];
-  var SIZES = { sm: 1, md: 1, lg: 1, wide: 1, tall: 1 };
-
-  /* ---------- i18n strings (UI chrome only) ---------- */
+  /* ---------- UI text. These are TRUSTED literals authored here (never user
+       input), so applyLang can safely use innerHTML — which lets the step
+       text keep its <b> emphasis when switching language. ---------- */
   var I18N = {
-    en: { empty: "No tiles.",
-          footer: "Static, no build step.",
-          eyebrow: "A skill for claude.ai (web)",
-          download: "Download lazy-html.skill",
-          github: "View on GitHub",
-          heroNote: "~196 KB · unzip & go · drop it in Claude's skills folder" },
-    zh: { empty: "沒有內容。",
-          footer: "純靜態,無建置流程。",
-          eyebrow: "claude.ai 網頁版 skill",
-          download: "下載 lazy-html.skill",
-          github: "在 GitHub 查看",
-          heroNote: "約 196 KB · 解壓即用 · 放進 Claude 的 skills 資料夾" }
+    en: {
+      pageTitle: "lazy-html — turn your data into a pretty web page",
+      eyebrow: "An add-on for Claude",
+      subtitle: "Turn your data into a pretty, clickable web page. No coding needed.",
+      download: "Download lazy-html",
+      heroNote: "Free · after downloading, follow the steps below to add it to Claude",
+      whatTitle: "What is it?",
+      whatLead: "lazy-html is a small add-on for Claude (Claude calls it a “skill”). Once it’s set up, just hand Claude whatever you want to organize — a piece of text, a list, a file, or even just a topic — and it builds you a pretty, clickable web page.",
+      whatLead2: "The result is a single file: save it and open it in any browser, send it to a friend, or put it online to share. You never write a single line of code.",
+      b1t: "No coding", b1d: "Just chat to get it done",
+      b2t: "One file", b2d: "Opens anywhere, easy to share",
+      b3t: "Pretty & handy", b3d: "Bilingual & dark mode built in",
+      howTitle: "How to use it",
+      howIntro: "Set it up once, then use it in any chat with Claude. Just four steps:",
+      step1: "<b>Download</b> lazy-html (the “Download” button above).",
+      step2: "Open Claude, go to <b>Customize</b> → <b>Skills</b>, click the <b>+</b> at the top right, and choose <b>Create skill</b>.",
+      step3: "Import the <b>lazy-html</b> file you just downloaded.",
+      step4: "Done! From now on, just tell Claude “<b>turn this into a web page</b>” and answer a few quick questions (layout, style) — it does the rest.",
+      shotAlt: "In Claude’s Customize → Skills, click the plus at top right and choose Create skill",
+      shotCap: "In Claude’s Customize → Skills, click “+” → Create skill to import."
+    },
+    zh: {
+      pageTitle: "lazy-html — 把資料變成漂亮的網頁",
+      eyebrow: "給 Claude 用的小工具",
+      subtitle: "把你的資料,變成一個漂亮、可以點來點去的網頁。不用寫程式。",
+      download: "下載 lazy-html",
+      heroNote: "免費 · 下載後依下方步驟裝進 Claude",
+      whatTitle: "這是什麼?",
+      whatLead: "lazy-html 是一個給 Claude 用的小工具(在 Claude 裡叫做「skill」)。裝好之後,你只要把想整理的東西交給 Claude —— 一段文字、一份清單、一個檔案,或只是一個主題 —— 它就會幫你做出一個漂亮、可以點來點去的網頁。",
+      whatLead2: "做好的網頁就是一個檔案,存下來用瀏覽器打開就能看,也可以傳給朋友,或放上網路分享。整個過程你都不用寫任何程式。",
+      b1t: "不用寫程式", b1d: "用聊天的方式就能完成",
+      b2t: "一個檔案", b2d: "到處都能打開、好分享",
+      b3t: "漂亮又好用", b3d: "中英文、深色模式都內建",
+      howTitle: "如何使用?",
+      howIntro: "只要設定一次,之後每次跟 Claude 聊天都能用。照著下面四步做就好:",
+      step1: "<b>下載</b> lazy-html(按上面的「下載」按鈕)。",
+      step2: "打開 Claude,進到 <b>Customize</b>(自訂)→ <b>Skills</b>,點右上角的 <b>+</b>,選 <b>Create skill</b>。",
+      step3: "把剛剛下載的 <b>lazy-html</b> 檔案匯入進去。",
+      step4: "完成!之後在對話裡跟 Claude 說「<b>幫我把這份資料做成網頁</b>」,再回答它問的幾個小問題(想要的版型、風格),就會幫你做好。",
+      shotAlt: "在 Claude 的 Customize → Skills,點右上角的加號,選 Create skill",
+      shotCap: "在 Claude 的 Customize → Skills,點右上角「+」→ Create skill,即可匯入。"
+    }
   };
 
   /* ---------- safe localStorage (sandbox-friendly) ---------- */
-  function lsGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
-  function lsSet(k, v) { try { localStorage.setItem(k, v); } catch (e) { /* ignore */ } }
+  function lsGet(k){ try { return localStorage.getItem(k); } catch (e) { return null; } }
+  function lsSet(k,v){ try { localStorage.setItem(k,v); } catch (e) {} }
 
-  /* ---------- global state ---------- */
-  var state = {
-    lang:  lsGet("lang")  || "zh",     // default language: zh
-    theme: lsGet("theme") || "light"
-  };
-
-  /* ---------- dom refs ---------- */
+  var state = { lang: lsGet("lang") || "zh", theme: lsGet("theme") || "light" };
   var $ = function (id) { return document.getElementById(id); };
-  var bento      = $("bento");
-  var empty      = $("empty");
-  var dialog     = $("dialog");
-  var dialogBody = $("dialogBody");
-
-  /* ---------- helpers ---------- */
-  function t(obj) {
-    if (obj == null) return "";
-    if (typeof obj === "string") return obj;
-    return obj[state.lang] || obj.en || obj.zh || "";
-  }
   function ui(key) { return (I18N[state.lang] || I18N.en)[key]; }
 
-  function escapeHtml(s) {
-    return String(s).replace(/[&<>"']/g, function (m) {
-      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[m];
-    });
-  }
-
-  function sizeClass(size) {
-    return SIZES.hasOwnProperty(size) ? size : "sm";
-  }
-
-  /* ---------- render tiles ---------- */
-  function render() {
-    bento.innerHTML = "";
-
-    TILES.forEach(function (item) {
-      var sz = sizeClass(item.size);
-      var tile = document.createElement("article");
-      // class `tile` + `card` (so layout-agnostic checks see a .card),
-      // plus the size modifier and optional accent.
-      tile.className = "tile card tile--" + sz + (item.accent ? " tile--accent" : "");
-      tile.tabIndex = 0;
-      tile.setAttribute("data-item", "");
-      tile.dataset.slug = item.slug;
-
-      var html = "";
-      if (item.icon) {
-        html += '<span class="material-symbols-rounded tile__icon">' +
-                escapeHtml(item.icon) + "</span>";
-      }
-      if (item.value != null && item.value !== "") {
-        html += '<p class="tile__value">' + escapeHtml(item.value) + "</p>";
-      }
-      html += '<h3 class="tile__title">' + escapeHtml(t(item.title)) + "</h3>";
-      // spacer pushes body to the bottom on tall/large tiles for nicer hierarchy
-      if (sz === "lg" || sz === "tall") html += '<span class="tile__spacer"></span>';
-      if (t(item.body)) {
-        html += '<p class="tile__body">' + escapeHtml(t(item.body)) + "</p>";
-      }
-      tile.innerHTML = html;
-
-      tile.addEventListener("click", function () { openDialog(item.slug); });
-      tile.addEventListener("keydown", function (e) {
-        if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openDialog(item.slug); }
-      });
-      bento.appendChild(tile);
-    });
-
-    empty.hidden = TILES.length !== 0;
-    empty.textContent = ui("empty");
-  }
-
-  /* ---------- dialog + deep links ---------- */
-  function openDialog(slug) {
-    var item = TILES.find(function (d) { return d.slug === slug; });
-    if (!item) return;
-    var html = "";
-    if (item.icon) {
-      html += '<span class="material-symbols-rounded dialog__icon">' +
-              escapeHtml(item.icon) + "</span>";
-    }
-    if (item.value != null && item.value !== "") {
-      html += '<p class="dialog__value">' + escapeHtml(item.value) + "</p>";
-    }
-    html += "<h2>" + escapeHtml(t(item.title)) + "</h2>";
-    if (t(item.body)) html += "<p>" + escapeHtml(t(item.body)) + "</p>";
-
-    // optional step/feature list
-    if (Array.isArray(item.points) && item.points.length) {
-      html += '<ol class="dialog__points">';
-      item.points.forEach(function (p) {
-        html += "<li>" + escapeHtml(t(p)) + "</li>";
-      });
-      html += "</ol>";
-    }
-
-    // optional supplementary links (e.g. download, deploy targets)
-    if (Array.isArray(item.links) && item.links.length) {
-      html += '<div class="dialog__links">';
-      item.links.forEach(function (lnk) {
-        if (!lnk || !lnk.url) return;
-        var isDownload = lnk.evt === "download";
-        var rel = ' rel="noopener"';
-        var extra = isDownload
-          ? ' download data-evt="download"'
-          : ' target="_blank"';
-        var icon = lnk.icon
-          ? '<span class="material-symbols-rounded">' + escapeHtml(lnk.icon) + "</span>"
-          : "";
-        html += '<a class="dialog__link" href="' + escapeHtml(lnk.url) + '"' +
-                extra + rel + ">" + icon + escapeHtml(t(lnk.label)) + "</a>";
-      });
-      html += "</div>";
-    }
-
-    dialogBody.innerHTML = html;
-
-    if (!dialog.open) dialog.showModal();
-    if (location.hash.slice(1) !== slug) {
-      history.replaceState(null, "", "#" + slug);
-    }
-  }
-  function closeDialog() {
-    if (dialog.open) dialog.close();
-    if (location.hash) history.replaceState(null, "", location.pathname + location.search);
-  }
-
-  /* ---------- chrome text (title + subtitle) ---------- */
-  function applyMeta() {
-    var titleStr = t(META.title);
-    var subStr   = t(META.subtitle);
-    var brand = $("brandName");
-    var hTitle = $("heroTitle");
-    var hSub = $("heroSubtitle");
-    if (titleStr) {
-      if (brand)  brand.textContent  = titleStr;
-      if (hTitle) hTitle.textContent = titleStr;
-      // keep brand/hero short ("lazy-html") but give <title> a descriptive,
-      // language-aware form for SEO / share previews.
-      document.title = t(META.pageTitle) || titleStr;
-    }
-    if (subStr && hSub) hSub.textContent = subStr;
-  }
-
-  /* ---------- theme + lang ---------- */
+  /* ---------- theme ---------- */
   function applyTheme() {
     document.documentElement.setAttribute("data-theme", state.theme);
     var icon = $("themeIcon");
     if (icon) icon.textContent = state.theme === "dark" ? "light_mode" : "dark_mode";
     lsSet("theme", state.theme);
   }
+
+  /* ---------- language: full-page switch ---------- */
   function applyLang() {
     document.documentElement.setAttribute("lang", state.lang);
     lsSet("lang", state.lang);
     var label = $("langLabel");
     if (label) label.textContent = state.lang === "en" ? "EN" : "中";
-    // translate chrome marked with data-i18n
+    document.title = ui("pageTitle");
     [].forEach.call(document.querySelectorAll("[data-i18n]"), function (el) {
-      var key = el.getAttribute("data-i18n");
-      if (!I18N[state.lang] || I18N[state.lang][key] == null) return;
+      var val = (I18N[state.lang] || {})[el.getAttribute("data-i18n")];
+      if (val == null) return;
       var attr = el.getAttribute("data-i18n-attr");
-      if (attr) el.setAttribute(attr, ui(key));
-      else el.textContent = ui(key);
+      if (attr) el.setAttribute(attr, val);   // e.g. image alt text
+      else el.innerHTML = val;                 // trusted literal (see note above)
     });
-    applyMeta();
   }
 
-  /* ---------- GA4: track .skill downloads ----------
+  /* ---------- GA4: track lazy-html downloads ----------
      GA4 Enhanced Measurement only auto-tracks file_download for a fixed
      extension list (pdf/zip/doc…); ".skill" is NOT on it, so we fire the
      recommended file_download event manually. Guarded so the page still
@@ -216,7 +100,7 @@
     });
   }
 
-  /* ---------- event wiring ---------- */
+  /* ---------- wiring ---------- */
   function wire() {
     $("themeToggle").addEventListener("click", function () {
       state.theme = state.theme === "dark" ? "light" : "dark";
@@ -225,24 +109,8 @@
     $("langToggle").addEventListener("click", function () {
       state.lang = state.lang === "en" ? "zh" : "en";
       applyLang();
-      render();
-      // full-page switch: if the detail dialog is open, repaint it too
-      var open = location.hash.slice(1);
-      if (dialog.open && open) openDialog(open);
     });
-    $("dialogClose").addEventListener("click", closeDialog);
-
-    dialog.addEventListener("click", function (e) {
-      if (e.target === dialog) closeDialog();   // backdrop click closes
-    });
-    dialog.addEventListener("close", function () {
-      if (location.hash) history.replaceState(null, "", location.pathname + location.search);
-    });
-
-    window.addEventListener("hashchange", syncFromHash);
-
-    // Delegated download tracking: catches the hero CTA and any in-dialog
-    // download link (both point at the .skill file) with one listener.
+    // Delegated download tracking: catches both download buttons.
     document.addEventListener("click", function (e) {
       var a = e.target.closest &&
               e.target.closest('a[data-evt="download"], a[href$="lazy-html.skill"]');
@@ -250,28 +118,7 @@
     });
   }
 
-  /* deep link: open dialog matching #slug on load / hashchange */
-  function syncFromHash() {
-    var slug = location.hash.slice(1);
-    if (slug && TILES.some(function (d) { return d.slug === slug; })) {
-      openDialog(slug);
-    } else if (!slug && dialog.open) {
-      dialog.close();
-    }
-  }
-
-  /* ---------- init ---------- */
-  function init() {
-    applyTheme();
-    applyLang();   // also calls applyMeta()
-    render();
-    wire();
-    syncFromHash();
-  }
-
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", init);
-  } else {
-    init();
-  }
+  function init() { applyTheme(); applyLang(); wire(); }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
+  else init();
 })();

@@ -4,8 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>lazy-html — 把資料變成漂亮的單檔網頁</title>
-  <meta name="description" content="lazy-html 是 claude.ai 網頁版專用的 skill,把你貼上的文字、檔案、URL 或主題,整理成一個漂亮、可互動的單檔 HTML。可直接下載使用。" />
+  <title>lazy-html — 把資料變成漂亮的網頁</title>
+  <meta name="description" content="lazy-html 是一個給 Claude 用的小工具。把它裝進 Claude,你只要丟給它文字、清單、檔案或一個主題,就能做出一個漂亮、可以點來點去的網頁。不用寫程式。" />
 
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-F87CED3TEG"></script>
@@ -21,15 +21,15 @@
 
   <!-- ==== Open Graph ==== -->
   <meta property="og:type" content="website" />
-  <meta property="og:title" content="lazy-html — 把資料變成漂亮的單檔網頁" />
-  <meta property="og:description" content="claude.ai 網頁版專用 skill:把資料整理成一個漂亮、可互動、可分享的單檔 HTML。下載 + 使用說明。" />
+  <meta property="og:title" content="lazy-html — 把資料變成漂亮的網頁" />
+  <meta property="og:description" content="一個給 Claude 用的小工具:把文字、清單、檔案或一個主題,變成漂亮、可互動的網頁。不用寫程式。" />
   <meta property="og:url" content="https://tingwei161803.github.io/lazy-html/" />
   <meta property="og:image" content="https://tingwei161803.github.io/lazy-html/assets/og-image.png" />
 
   <!-- ==== Twitter ==== -->
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="lazy-html — 把資料變成漂亮的單檔網頁" />
-  <meta name="twitter:description" content="claude.ai 網頁版專用 skill:把資料整理成一個漂亮、可互動的單檔 HTML。" />
+  <meta name="twitter:title" content="lazy-html — 把資料變成漂亮的網頁" />
+  <meta name="twitter:description" content="一個給 Claude 用的小工具:把資料變成漂亮、可互動的網頁。不用寫程式。" />
   <meta name="twitter:image" content="https://tingwei161803.github.io/lazy-html/assets/og-image.png" />
 
   <!-- ==== JSON-LD structured data ==== -->
@@ -39,8 +39,8 @@
     "@type": "SoftwareApplication",
     "name": "lazy-html",
     "applicationCategory": "DeveloperApplication",
-    "operatingSystem": "Web (claude.ai)",
-    "description": "A claude.ai web skill that turns pasted data, files, URLs or a topic into one pretty, interactive, self-contained HTML page.",
+    "operatingSystem": "Web (Claude)",
+    "description": "An add-on for Claude that turns text, lists, files or a topic into a pretty, interactive web page — no coding needed.",
     "url": "https://tingwei161803.github.io/lazy-html/",
     "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
   }
@@ -58,78 +58,99 @@
   <!-- ==== App bar ==== -->
   <header class="appbar">
     <div class="appbar__inner">
-      <a class="brand" href="#">
+      <span class="brand">
         <span class="material-symbols-rounded brand__logo">bolt</span>
-        <span class="brand__name" id="brandName">lazy-html</span>
-      </a>
-
+        <span class="brand__name">lazy-html</span>
+      </span>
       <div class="appbar__actions">
-        <a class="icon-btn" href="https://github.com/tingwei161803/lazy-html"
-           target="_blank" rel="noopener" title="GitHub" aria-label="GitHub">
-          <span class="material-symbols-rounded">code</span>
-        </a>
-
-        <button class="icon-btn" id="langToggle" type="button"
-                title="Language" aria-label="Toggle language">
+        <button class="icon-btn" id="langToggle" type="button" title="Language" aria-label="切換語言 / Toggle language">
           <span class="material-symbols-rounded">translate</span>
           <span class="icon-btn__txt" id="langLabel">EN</span>
         </button>
-
-        <button class="icon-btn" id="themeToggle" type="button"
-                title="Theme" aria-label="Toggle theme">
+        <button class="icon-btn" id="themeToggle" type="button" title="Theme" aria-label="切換深淺色 / Toggle theme">
           <span class="material-symbols-rounded" id="themeIcon">dark_mode</span>
         </button>
       </div>
     </div>
   </header>
 
-  <!-- ==== Hero / page heading ==== -->
+  <!-- ==== Hero ==== -->
   <section class="hero">
-    <div class="hero__inner">
-      <span class="hero__eyebrow" data-i18n="eyebrow">claude.ai 網頁版 skill</span>
-      <h1 class="hero__title" id="heroTitle">lazy-html</h1>
-      <p class="hero__subtitle" id="heroSubtitle"></p>
-
-      <div class="hero__actions">
-        <a class="btn btn--filled" id="downloadBtn" href="lazy-html.skill" download
-           data-evt="download">
-          <span class="material-symbols-rounded">download</span>
-          <span data-i18n="download">下載 lazy-html.skill</span>
-        </a>
-        <a class="btn btn--tonal" href="https://github.com/tingwei161803/lazy-html"
-           target="_blank" rel="noopener">
-          <span class="material-symbols-rounded">code</span>
-          <span data-i18n="github">在 GitHub 查看</span>
-        </a>
-      </div>
-      <p class="hero__note" data-i18n="heroNote" id="heroNote">約 196 KB · 解壓即用 · 放進 Claude 的 skills 資料夾</p>
+    <span class="hero__eyebrow" data-i18n="eyebrow">給 Claude 用的小工具</span>
+    <h1 class="hero__title">lazy-html</h1>
+    <p class="hero__subtitle" data-i18n="subtitle">把你的資料,變成一個漂亮、可以點來點去的網頁。不用寫程式。</p>
+    <div class="hero__actions">
+      <a class="btn btn--filled" id="downloadBtn" href="lazy-html.skill" download data-evt="download">
+        <span class="material-symbols-rounded">download</span>
+        <span data-i18n="download">下載 lazy-html</span>
+      </a>
     </div>
+    <p class="hero__note" data-i18n="heroNote">免費 · 下載後依下方步驟裝進 Claude</p>
   </section>
 
-  <!-- ==== Bento tile grid ==== -->
-  <main class="bento" id="bento" aria-live="polite"></main>
+  <main>
+    <!-- ==== 是什麼 ==== -->
+    <section class="block" id="what" data-section>
+      <div class="block__inner">
+        <h2><span class="material-symbols-rounded">auto_awesome</span><span data-i18n="whatTitle">這是什麼?</span></h2>
+        <p data-i18n="whatLead">lazy-html 是一個給 Claude 用的小工具(在 Claude 裡叫做「skill」)。裝好之後,你只要把想整理的東西交給 Claude —— 一段文字、一份清單、一個檔案,或只是一個主題 —— 它就會幫你做出一個漂亮、可以點來點去的網頁。</p>
+        <p data-i18n="whatLead2">做好的網頁就是一個檔案,存下來用瀏覽器打開就能看,也可以傳給朋友,或放上網路分享。整個過程你都不用寫任何程式。</p>
 
-  <!-- Empty state -->
-  <p class="empty" id="empty" hidden data-i18n="empty">No tiles.</p>
+        <ul class="benefits">
+          <li class="benefit">
+            <span class="material-symbols-rounded">edit_off</span>
+            <b data-i18n="b1t">不用寫程式</b>
+            <span data-i18n="b1d">用聊天的方式就能完成</span>
+          </li>
+          <li class="benefit">
+            <span class="material-symbols-rounded">description</span>
+            <b data-i18n="b2t">一個檔案</b>
+            <span data-i18n="b2d">到處都能打開、好分享</span>
+          </li>
+          <li class="benefit">
+            <span class="material-symbols-rounded">palette</span>
+            <b data-i18n="b3t">漂亮又好用</b>
+            <span data-i18n="b3d">中英文、深色模式都內建</span>
+          </li>
+        </ul>
+      </div>
+    </section>
 
-  <!-- ==== Detail dialog ==== -->
-  <dialog class="dialog" id="dialog">
-    <div class="dialog__bar">
-      <span class="dialog__spacer"></span>
-      <button class="icon-btn" id="dialogClose" type="button" aria-label="Close">
-        <span class="material-symbols-rounded">close</span>
-      </button>
-    </div>
-    <div class="dialog__body" id="dialogBody"></div>
-  </dialog>
+    <!-- ==== 如何使用 ==== -->
+    <section class="block" id="how" data-section>
+      <div class="block__inner">
+        <h2><span class="material-symbols-rounded">rocket_launch</span><span data-i18n="howTitle">如何使用?</span></h2>
+        <p data-i18n="howIntro">只要設定一次,之後每次跟 Claude 聊天都能用。照著下面四步做就好:</p>
+
+        <ol class="steps">
+          <li data-i18n="step1"><b>下載</b> lazy-html(按上面的「下載」按鈕)。</li>
+          <li data-i18n="step2">打開 Claude,進到 <b>Customize</b>(自訂)→ <b>Skills</b>,點右上角的 <b>+</b>,選 <b>Create skill</b>。</li>
+          <li data-i18n="step3">把剛剛下載的 <b>lazy-html</b> 檔案匯入進去。</li>
+          <li data-i18n="step4">完成!之後在對話裡跟 Claude 說「<b>幫我把這份資料做成網頁</b>」,再回答它問的幾個小問題(想要的版型、風格),就會幫你做好。</li>
+        </ol>
+
+        <figure class="shot">
+          <img src="assets/customize.png" data-i18n-attr="alt" data-i18n="shotAlt"
+               alt="在 Claude 的 Customize → Skills,點右上角的加號,選 Create skill" />
+          <figcaption data-i18n="shotCap">在 Claude 的 Customize → Skills,點右上角「+」→ Create skill,即可匯入。</figcaption>
+        </figure>
+
+        <div class="block__cta">
+          <a class="btn btn--filled" href="lazy-html.skill" download data-evt="download">
+            <span class="material-symbols-rounded">download</span>
+            <span data-i18n="download">下載 lazy-html</span>
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
 
   <!-- ==== Footer ==== -->
   <footer class="footer">
-    <p data-i18n="footer">Static, no build step.</p>
+    <p>© 2026 <a href="https://www.linkedin.com/in/ai-med/" target="_blank" rel="noopener">
+      <span class="material-symbols-rounded">person</span>Peter Chang</a></p>
   </footer>
 
-  <!-- ==== Scripts (order matters: data first) ==== -->
-  <script src="data/data.js"></script>
   <script src="assets/app.js"></script>
 </body>
 </html>
