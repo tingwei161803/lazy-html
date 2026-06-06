@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="zh" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>lazy-html — 把資料變成漂亮的單檔網頁</title>
+  <meta name="description" content="lazy-html 是 claude.ai 網頁版專用的 skill,把你貼上的文字、檔案、URL 或主題,整理成一個漂亮、可互動的單檔 HTML。可直接下載使用。" />
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-F87CED3TEG"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-F87CED3TEG');
+  </script>
+
+  <link rel="canonical" href="https://tingwei161803.github.io/lazy-html/" />
+  <meta name="theme-color" content="#6750A4" />
+
+  <!-- ==== Open Graph ==== -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="lazy-html — 把資料變成漂亮的單檔網頁" />
+  <meta property="og:description" content="claude.ai 網頁版專用 skill:把資料整理成一個漂亮、可互動、可分享的單檔 HTML。下載 + 使用說明。" />
+  <meta property="og:url" content="https://tingwei161803.github.io/lazy-html/" />
+  <meta property="og:image" content="https://tingwei161803.github.io/lazy-html/assets/og-image.png" />
+
+  <!-- ==== Twitter ==== -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="lazy-html — 把資料變成漂亮的單檔網頁" />
+  <meta name="twitter:description" content="claude.ai 網頁版專用 skill:把資料整理成一個漂亮、可互動的單檔 HTML。" />
+  <meta name="twitter:image" content="https://tingwei161803.github.io/lazy-html/assets/og-image.png" />
+
+  <!-- ==== JSON-LD structured data ==== -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "lazy-html",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "Web (claude.ai)",
+    "description": "A claude.ai web skill that turns pasted data, files, URLs or a topic into one pretty, interactive, self-contained HTML page.",
+    "url": "https://tingwei161803.github.io/lazy-html/",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+  }
+  </script>
+
+  <!-- ==== Fonts + icons (CDN, no local files) ==== -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Roboto+Flex:opsz,wght@8..144,400..700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="assets/styles.css" />
+</head>
+<body>
+  <!-- ==== App bar ==== -->
+  <header class="appbar">
+    <div class="appbar__inner">
+      <a class="brand" href="#">
+        <span class="material-symbols-rounded brand__logo">bolt</span>
+        <span class="brand__name" id="brandName">lazy-html</span>
+      </a>
+
+      <div class="appbar__actions">
+        <a class="icon-btn" href="https://github.com/tingwei161803/lazy-html"
+           target="_blank" rel="noopener" title="GitHub" aria-label="GitHub">
+          <span class="material-symbols-rounded">code</span>
+        </a>
+
+        <button class="icon-btn" id="langToggle" type="button"
+                title="Language" aria-label="Toggle language">
+          <span class="material-symbols-rounded">translate</span>
+          <span class="icon-btn__txt" id="langLabel">EN</span>
+        </button>
+
+        <button class="icon-btn" id="themeToggle" type="button"
+                title="Theme" aria-label="Toggle theme">
+          <span class="material-symbols-rounded" id="themeIcon">dark_mode</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ==== Hero / page heading ==== -->
+  <section class="hero">
+    <div class="hero__inner">
+      <span class="hero__eyebrow" data-i18n="eyebrow">claude.ai 網頁版 skill</span>
+      <h1 class="hero__title" id="heroTitle">lazy-html</h1>
+      <p class="hero__subtitle" id="heroSubtitle"></p>
+
+      <div class="hero__actions">
+        <a class="btn btn--filled" id="downloadBtn" href="lazy-html.skill" download
+           data-evt="download">
+          <span class="material-symbols-rounded">download</span>
+          <span data-i18n="download">下載 lazy-html.skill</span>
+        </a>
+        <a class="btn btn--tonal" href="https://github.com/tingwei161803/lazy-html"
+           target="_blank" rel="noopener">
+          <span class="material-symbols-rounded">code</span>
+          <span data-i18n="github">在 GitHub 查看</span>
+        </a>
+      </div>
+      <p class="hero__note" data-i18n="heroNote" id="heroNote">約 196 KB · 解壓即用 · 放進 Claude 的 skills 資料夾</p>
+    </div>
+  </section>
+
+  <!-- ==== Bento tile grid ==== -->
+  <main class="bento" id="bento" aria-live="polite"></main>
+
+  <!-- Empty state -->
+  <p class="empty" id="empty" hidden data-i18n="empty">No tiles.</p>
+
+  <!-- ==== Detail dialog ==== -->
+  <dialog class="dialog" id="dialog">
+    <div class="dialog__bar">
+      <span class="dialog__spacer"></span>
+      <button class="icon-btn" id="dialogClose" type="button" aria-label="Close">
+        <span class="material-symbols-rounded">close</span>
+      </button>
+    </div>
+    <div class="dialog__body" id="dialogBody"></div>
+  </dialog>
+
+  <!-- ==== Footer ==== -->
+  <footer class="footer">
+    <p data-i18n="footer">Static, no build step.</p>
+  </footer>
+
+  <!-- ==== Scripts (order matters: data first) ==== -->
+  <script src="data/data.js"></script>
+  <script src="assets/app.js"></script>
+</body>
+</html>
