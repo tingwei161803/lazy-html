@@ -26,7 +26,7 @@
       step1: "<b>Download</b> lazy-html (the “Download” button above).",
       step2: "Open Claude, go to <b>Customize</b> → <b>Skills</b>, click the <b>+</b> at the top right, and choose <b>Create skill</b>.",
       step3: "Import the <b>lazy-html</b> file you just downloaded.",
-      step4: "Done! From now on, just tell Claude “<b>turn this into a web page</b>” and answer a few quick questions (layout, style) — it does the rest.",
+      step4: "Done! From now on, just tell Claude “<b>use lazy-html to organize this</b>” and answer a few quick questions (layout, style) — it does the rest.",
       shotAlt: "In Claude’s Customize → Skills, click the plus at top right and choose Create skill",
       shotCap: "In Claude’s Customize → Skills, click “+” → Create skill to import."
     },
@@ -47,7 +47,7 @@
       step1: "<b>下載</b> lazy-html(按上面的「下載」按鈕)。",
       step2: "打開 Claude,進到 <b>Customize</b>(自訂)→ <b>Skills</b>,點右上角的 <b>+</b>,選 <b>Create skill</b>。",
       step3: "把剛剛下載的 <b>lazy-html</b> 檔案匯入進去。",
-      step4: "完成!之後在對話裡跟 Claude 說「<b>幫我把這份資料做成網頁</b>」,再回答它問的幾個小問題(想要的版型、風格),就會幫你做好。",
+      step4: "完成!之後在對話裡跟 Claude 說「<b>用 lazy-html 整理這些資料</b>」,再回答它問的幾個小問題(想要的版型、風格),就會幫你做好。",
       shotAlt: "在 Claude 的 Customize → Skills,點右上角的加號,選 Create skill",
       shotCap: "在 Claude 的 Customize → Skills,點右上角「+」→ Create skill,即可匯入。"
     }

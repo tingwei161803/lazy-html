@@ -314,6 +314,8 @@ main { padding-bottom: 24px; }
   color: var(--on-surface-variant);
   font-size: .95rem;
 }
+.footer__name { margin: 0 0 8px; }
+.footer__links { margin: 0; }
 .footer a {
   display: inline-flex;
   align-items: center;
