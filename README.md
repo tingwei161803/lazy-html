@@ -10,8 +10,8 @@ lazy-html 是一個給 Claude 用的小工具(skill)。裝進 Claude 後,你只�
 
 | | |
 |---|---|
-| 🌐 介紹頁 | <https://tingwei161803.github.io/lazy-html/> |
-| 📦 下載 | <https://tingwei161803.github.io/lazy-html/lazy-html.skill> |
+| 🌐 介紹頁 | <https://lazy-html.peteraim.com/> |
+| 📦 下載 | <https://lazy-html.peteraim.com/lazy-html.skill> |
 
 ---
 
