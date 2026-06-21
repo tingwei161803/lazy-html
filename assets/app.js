@@ -73,7 +73,7 @@
   function lsGet(k){ try { return localStorage.getItem(k); } catch (e) { return null; } }
   function lsSet(k,v){ try { localStorage.setItem(k,v); } catch (e) {} }
 
-  var state = { lang: lsGet("lang") || "zh", theme: lsGet("theme") || "light" };
+  var state = { lang: lsGet("lang") || "en", theme: lsGet("theme") || "light" };
   var $ = function (id) { return document.getElementById(id); };
   function ui(key) { return (I18N[state.lang] || I18N.en)[key]; }
 
