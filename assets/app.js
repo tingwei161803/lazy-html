@@ -1,6 +1,6 @@
 /* =========================================================================
    lazy-html intro page — vanilla, no build.
-   Only: bilingual (zh/en) full-page switch, light/dark, GA4 download event.
+   Only: bilingual (zh/en, one page per language), light/dark, GA4 download event.
    ========================================================================= */
 (function () {
   "use strict";
@@ -73,7 +73,15 @@
   function lsGet(k){ try { return localStorage.getItem(k); } catch (e) { return null; } }
   function lsSet(k,v){ try { localStorage.setItem(k,v); } catch (e) {} }
 
-  var state = { lang: lsGet("lang") || "en", theme: lsGet("theme") || "light" };
+  /* ---------- language comes from the URL ----------
+     Each language has its own page, and the page says which one it is in
+     <html lang>. Never read the language back from storage: someone landing on
+     /en/ must get English even if they once picked 中文 here, and crawlers have
+     no storage at all — they only ever see what the URL serves. */
+  var pageLang = (document.documentElement.getAttribute("lang") || "en")
+    .toLowerCase().indexOf("zh") === 0 ? "zh" : "en";
+
+  var state = { lang: pageLang, theme: lsGet("theme") || "light" };
   var $ = function (id) { return document.getElementById(id); };
   function ui(key) { return (I18N[state.lang] || I18N.en)[key]; }
 
@@ -85,12 +93,10 @@
     lsSet("theme", state.theme);
   }
 
-  /* ---------- language: full-page switch ---------- */
+  /* ---------- language: fill the page with this page's language ----------
+     <html lang> is already correct in the markup, so it is never rewritten
+     here — the dictionary just supplies the text that goes with it. */
   function applyLang() {
-    document.documentElement.setAttribute("lang", state.lang);
-    lsSet("lang", state.lang);
-    var label = $("langLabel");
-    if (label) label.textContent = state.lang === "en" ? "EN" : "中";
     document.title = ui("pageTitle");
     [].forEach.call(document.querySelectorAll("[data-i18n]"), function (el) {
       var val = (I18N[state.lang] || {})[el.getAttribute("data-i18n")];
@@ -122,10 +128,8 @@
       state.theme = state.theme === "dark" ? "light" : "dark";
       applyTheme();
     });
-    $("langToggle").addEventListener("click", function () {
-      state.lang = state.lang === "en" ? "zh" : "en";
-      applyLang();
-    });
+    // The language switch is a plain <a> to the other language's page — no
+    // handler here on purpose, so clicking it is an ordinary navigation.
     // Delegated download tracking: catches both download buttons.
     document.addEventListener("click", function (e) {
       var a = e.target.closest &&
